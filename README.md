@@ -1,1 +1,1 @@
-POwer BI Integratrion to GitHub
+Power BI Integratrion to GitHub

@@ -1,0 +1,50 @@
+table 'Table C'
+	lineageTag: ea4fc7d1-b9b1-44df-8ac3-852c3b713c00
+
+	column 'KPI ID'
+		formatString: 0
+		lineageTag: 6006593f-0055-40c6-be80-7391be87d36c
+		summarizeBy: count
+		isNameInferred
+		sourceColumn: [KPI ID]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Formatted Value'
+		lineageTag: 57ec94ad-a97a-453b-814a-484f677face5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Formatted Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Table C' = calculated
+		mode: import
+		source =
+				
+				SELECTCOLUMNS (
+				    ADDCOLUMNS (
+				        'Table_B',
+				        "Formatted Value",
+				        SWITCH (
+				            RELATED('Table_A'[DataType]),
+				            "Decimal",
+				                VAR SelectedDecimal = RELATED('Table_A'[Decimal Places])
+				                VAR RawValue = 'Table_B'[Values]
+				                RETURN
+				                    IF (
+				                        SelectedDecimal = 0,
+				                        FORMAT(RawValue, "0"),
+				                        FORMAT(RawValue, "0." & REPT("0", SelectedDecimal))
+				                    ),
+				            "String",
+				                'Table_B'[ValuesText],
+				            BLANK()
+				        )
+				    ),
+				    "KPI ID", 'Table_B'[KPI ID],
+				    "Formatted Value", [Formatted Value]
+				)
+
+	annotation PBI_Id = 847b47f618844f59906f1d1d9f0b865f
+

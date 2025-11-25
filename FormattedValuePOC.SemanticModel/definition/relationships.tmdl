@@ -1,0 +1,4 @@
+relationship 17625cf6-c433-c292-5c5b-0f8a766102e7
+	fromColumn: Table_B.'KPI ID'
+	toColumn: Table_A.'KPI ID'
+

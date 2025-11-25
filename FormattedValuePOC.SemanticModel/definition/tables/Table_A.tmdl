@@ -1,0 +1,44 @@
+table Table_A
+	lineageTag: b335de0e-881c-4a4b-8f52-f046bd07ccc8
+
+	column 'KPI ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 08b8120d-51d2-4b41-9544-1bdecf66062b
+		summarizeBy: none
+		sourceColumn: KPI ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Decimal Places'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8ac95397-b530-4581-b451-a6522249dcea
+		summarizeBy: none
+		sourceColumn: Decimal Places
+
+		annotation SummarizationSetBy = User
+
+	column DataType
+		dataType: string
+		lineageTag: 613352a3-22e8-403b-8521-24eecc028acc
+		summarizeBy: none
+		sourceColumn: DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Table_A = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\HEI3COB\Desktop\SusAn Power BI File\Decimal Value Task\Table A.xlsx"), null, true),
+				    Sheet1_Sheet = Source{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"KPI ID", Int64.Type}, {"Decimal Places", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
